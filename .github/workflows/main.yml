@@ -16,16 +16,23 @@ jobs:
     - name: Setup Node.js (v18)
       uses: actions/setup-node@v3
       with:
-        node-version: '18'  # Use Node.js v18 to avoid fs/promises issues
+        node-version: '18'
 
     - name: Install dependencies
       run: npm install
 
     - name: Build React app
-      run: npm run build
+      run: |
+        npm run build
+        ls -al build  # Debug: List files in the 'build' directory to verify its creation
 
     - name: Install Netlify CLI
       run: npm install -g netlify-cli
 
     - name: Deploy to Netlify
-      run: netlify deploy --dir=build --prod --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --site ${{ secrets.NETLIFY_SITE_ID }}
+      run: |
+        if [ ! -d "build" ]; then
+          echo "Build directory not found. Exiting deployment.";
+          exit 1;
+        fi
+        netlify deploy --dir=build --prod --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --site ${{ secrets.NETLIFY_SITE_ID }}
