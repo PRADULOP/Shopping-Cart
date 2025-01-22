@@ -24,15 +24,15 @@ jobs:
     - name: Build React app
       run: |
         npm run build
-        ls -al build  # Debug: List files in the 'build' directory to verify its creation
+        ls -al dist  # Debug: List files in the 'dist' directory to verify its creation
 
     - name: Install Netlify CLI
       run: npm install -g netlify-cli
 
     - name: Deploy to Netlify
       run: |
-        if [ ! -d "build" ]; then
+        if [ ! -d "dist" ]; then
           echo "Build directory not found. Exiting deployment.";
           exit 1;
         fi
-        netlify deploy --dir=build --prod --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --site ${{ secrets.NETLIFY_SITE_ID }}
+        netlify deploy --dir=dist --prod --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --site ${{ secrets.NETLIFY_SITE_ID }}
